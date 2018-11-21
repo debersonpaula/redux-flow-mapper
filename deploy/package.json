@@ -1,0 +1,34 @@
+{
+  "name": "redux-flow-mapper",
+  "version": "0.0.1-beta.0",
+  "description": "Redux Flow Mapper",
+  "main": "index.js",
+  "author": "D.A.Paula",
+  "license": "MIT",
+  "peerDependencies": {
+    "react-redux": ">=5.0.0",
+    "reflect-metadata": ">=0.1.0",
+    "rxjs": ">=6.0.0"
+  },
+  "devDependencies": {
+    "@types/react-redux": "^6.0.9",
+    "react-redux": ">=5.0.0",
+    "reflect-metadata": ">=0.1.0",
+    "rxjs": ">=6.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/debersonpaula/redux-flow-mapper.git"
+  },
+  "keywords": [
+    "react",
+    "redux",
+    "flow",
+    "mapper",
+    "typescript"
+  ],
+  "bugs": {
+    "url": "https://github.com/debersonpaula/redux-flow-mapper/issues"
+  },
+  "homepage": "https://github.com/debersonpaula/redux-flow-mapper#readme"
+}
