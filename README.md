@@ -18,9 +18,11 @@ Work in Progress:
 ## Requirements
 
 ```bash
-# requires redux and rxjs:
-npm install --save react-redux
-npm install --save rxjs
+# requires the following packages:
+npm i --save react-redux
+npm i --save rxjs
+npm i --save-dev @babel/plugin-proposal-decorators
+npm i --save-dev @babel/plugin-proposal-class-properties
 ```
 
 ## Install

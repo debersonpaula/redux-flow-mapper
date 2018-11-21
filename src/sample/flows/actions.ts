@@ -1,5 +1,6 @@
 import { FlowActions, getState, getTrigger } from 'src/lib/rx-flow';
-import { StageOneState, StageTwoState, StageThreeState } from './states';
+import { StageOneState, StageTwoState, StageThreeState, StageFourState } from './states';
+import { FlowActionsPromised } from 'src/lib/rx-flow/plugins/ReduxPromised';
 
 // --------------------------------------------------------------------
 // --- ACTIONS FOR STAGE 1 --------------------------------------------
@@ -93,4 +94,14 @@ export class StageThreeActions {
   other = () => (state: StageThreeState): StageThreeState => {
     return { ...state, other: 'another action response' };
   };
+}
+// --------------------------------------------------------------------
+// --- ACTIONS FOR STAGE 4 --------------------------------------------
+// --------------------------------------------------------------------
+@FlowActionsPromised({
+  name: 'stage4.actions',
+  state: StageFourState
+})
+export class StageFourActions {
+
 }

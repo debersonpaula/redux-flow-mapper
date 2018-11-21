@@ -1,4 +1,5 @@
 import { FlowState } from 'src/lib/rx-flow';
+import { FlowPromiseState } from 'src/lib/rx-flow/plugins/ReduxPromised';
 
 // --------------------------------------------------------------------
 // --- STAGE 1 --------------------------------------------------------
@@ -32,4 +33,13 @@ export class StageTwoState {
 export class StageThreeState {
   isStarted = false;
   other = '';
+}
+// --------------------------------------------------------------------
+// --- STAGE 4 --------------------------------------------------------
+// --------------------------------------------------------------------
+@FlowState({
+  name: 'stage4'
+})
+export class StageFourState extends FlowPromiseState<any, any> {
+  isStarted = false;
 }
