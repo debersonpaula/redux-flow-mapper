@@ -30,6 +30,29 @@ npm install --save rxjs
 npm i redux-flow-mapper
 ```
 
+## Setup tsconfig and babelrc
+Include support for decorators in the tsconfig.json file:
+```js
+{
+  "compilerOptions": {
+    ...
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}
+```
+
+If Babel is used to transpile the application, include the plugins below in the _.babelrc_ file. Consider these itens as firts in the plugins list and in the same order that appears below:
+
+```js
+"plugins": [
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose": true}],
+    ...
+  ],
+```
+
+
 ## Concept
 
 This package is based in the common flow principles to control the activities in the frontend.
