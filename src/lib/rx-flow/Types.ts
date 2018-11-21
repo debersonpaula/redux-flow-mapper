@@ -51,7 +51,7 @@ export interface IReduxFlowConnection {
   /**
    * Flow object to be used as map
    */
-  flow?: IReduxFlow;
+  flow?: IReduxFlowMapper;
 
   /**
    * Properties class
@@ -93,7 +93,7 @@ export interface IReduxFlowModule {
 // --------------------------------------------------------------------
 // --------------------------------------------------------------------
 // --------------------------------------------------------------------
-export interface IReduxFlow {
+export interface IReduxFlowMapper {
   createStore(): Store;
   actionByType(type: any): any;
   stateNameByType(type: any): any;

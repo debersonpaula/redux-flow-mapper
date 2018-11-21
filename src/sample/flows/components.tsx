@@ -1,8 +1,8 @@
 import * as React from 'react';
 
 import { getAction, getState, FlowConnection } from 'src/lib/rx-flow';
-import { StageOneState, StageTwoState } from './states';
-import { StageOneActions } from './actions';
+import { StageOneState, StageTwoState, StageThreeState } from './states';
+import { StageOneActions, StageTwoActions, StageThreeActions } from './actions';
 import { reduxflowApplication } from './main';
 
 // --------------------------------------------------------------------
@@ -61,6 +61,7 @@ export class StageOneComponent extends React.Component<StageOneComponentProps> {
 // --- COMPONENT FOR STAGE TWO ----------------------------------------
 // --------------------------------------------------------------------
 class StageTwoComponentProps {
+  @getAction(StageTwoActions) actions?: StageTwoActions;
   @getState(StageTwoState) stage?: StageTwoState;
 }
 @FlowConnection({
@@ -73,6 +74,37 @@ export class StageTwoComponent extends React.Component<StageTwoComponentProps> {
       return (
         <div className="flow-box">
           <strong>stage two</strong>
+          <p><button onClick={this.complete}>start a promise</button></p>
+          {this.props.stage.isLoading ? <p>Loading...</p> : null}
+        </div>
+      );
+    }
+    return null;
+  }
+  complete = () => {
+    this.props.actions.startPromise();
+  }
+}
+// --------------------------------------------------------------------
+// --- COMPONENT FOR STAGE THREE --------------------------------------
+// --------------------------------------------------------------------
+class StageThreeComponentProps {
+  @getAction(StageThreeActions) actions?: StageThreeActions;
+  @getState(StageThreeState) stage?: StageThreeState;
+  @getState(StageTwoState) previousStage?: StageTwoState;
+}
+@FlowConnection({
+  flow: reduxflowApplication,
+  props: StageThreeComponentProps
+})
+export class StageThreeComponent extends React.Component<StageThreeComponentProps> {
+  render() {
+    if (this.props.stage.isStarted) {
+      return (
+        <div className="flow-box">
+          <strong>stage three</strong>
+          <p>Result from promise = {this.props.previousStage.response}</p>
+          <p>Another action response = {this.props.stage.other}</p>
         </div>
       );
     }

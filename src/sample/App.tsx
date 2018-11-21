@@ -4,7 +4,7 @@ import { HashRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 
 import { reduxflowApplication } from './flows/main';
-import { StageOneComponent, InitialComponent, StageTwoComponent } from './flows/components';
+import { StageOneComponent, InitialComponent, StageTwoComponent, StageThreeComponent } from './flows/components';
 
 export class App extends React.Component {
   public render() {
@@ -15,6 +15,7 @@ export class App extends React.Component {
             <InitialComponent />
             <StageOneComponent />
             <StageTwoComponent />
+            <StageThreeComponent />
           </div>
         </Provider>
       </HashRouter>

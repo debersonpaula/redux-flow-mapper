@@ -4,7 +4,7 @@ import {
   ENUM_PROPERTY_NAME,
   IReduxFlowOptions,
   IReducerActions,
-  IReduxFlow,
+  IReduxFlowMapper,
   getComponentProps,
   ComponentProps,
   IDispatchAction,
@@ -17,7 +17,7 @@ import { BehaviorSubject } from 'rxjs';
 // --------------------------------------------------------------------
 // --------------------------------------------------------------------
 // --------------------------------------------------------------------
-export class ReduxFlow implements IReduxFlow {
+export class FlowMapper implements IReduxFlowMapper {
   private options: IReduxFlowOptions;
   private pStore: Store;
 
@@ -220,7 +220,7 @@ function createActions(modules: IReduxFlowModule[]): any[] {
  */
 function createMethods(
   actions: Object[],
-  reduxflow: ReduxFlow,
+  reduxflow: FlowMapper,
   reducerActions: IReducerActions
 ) {
   actions.forEach(action => {
@@ -267,7 +267,7 @@ function createMethods(
 
 function createTriggers(
   actions: any[],
-  reduxflow: ReduxFlow,
+  reduxflow: FlowMapper,
   reducerActions: IReducerActions
 ) {
   actions.forEach(action => {

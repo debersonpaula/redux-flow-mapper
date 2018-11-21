@@ -19,4 +19,17 @@ export class StageOneState {
 })
 export class StageTwoState {
   isStarted = false;
+  isLoading = false;
+  isCompleted = false;
+  response = '';
+}
+// --------------------------------------------------------------------
+// --- STAGE 3 --------------------------------------------------------
+// --------------------------------------------------------------------
+@FlowState({
+  name: 'stage3'
+})
+export class StageThreeState {
+  isStarted = false;
+  other = '';
 }

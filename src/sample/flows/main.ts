@@ -1,22 +1,18 @@
-import { ReduxFlow, FlowModule } from 'src/lib/rx-flow';
-import { StageOneState, StageTwoState } from './states';
-import { StageOneActions, StageTwoActions } from './actions';
+import { FlowMapper, FlowModule } from 'src/lib/rx-flow';
+import { StageOneState, StageTwoState, StageThreeState } from './states';
+import { StageOneActions, StageTwoActions, StageThreeActions } from './actions';
 // --------------------------------------------------------------------
 // --- MODULES --------------------------------------------------------
 // --------------------------------------------------------------------
 @FlowModule({
-  states: [StageOneState, StageTwoState],
-  actions: [StageOneActions, StageTwoActions]
+  states: [StageOneState, StageTwoState, StageThreeState],
+  actions: [StageOneActions, StageTwoActions, StageThreeActions]
 })
 export class MainModule {}
 // --------------------------------------------------------------------
 // --- REDUX FLOW -----------------------------------------------------
 // --------------------------------------------------------------------
-export const reduxflowApplication = new ReduxFlow({
+export const reduxflowApplication = new FlowMapper({
   devExtension: true,
   modules: [MainModule]
 });
-
-// reduxflowApplication.store.subscribe(()=>{
-//   console.log('subscribe', reduxflowApplication.store.getState());
-// });
