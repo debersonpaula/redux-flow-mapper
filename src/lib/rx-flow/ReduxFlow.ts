@@ -102,7 +102,6 @@ export class FlowMapper implements IReduxFlowMapper {
    */
   stateNameByType(type: any) {
     for (let i = 0; i < this.pStates.length; i += 1) {
-      // console.log(this.pStates[i]);
       if (type === this.pStates[i].constructor) {
         // extract name from state constructor
         const name = Reflect.getMetadata(
@@ -230,7 +229,6 @@ function createMethods(
     const prefix = Reflect.getMetadata(ENUM_PROPERTY_NAME, actionConstructor);
     // extract props name from action
     const actionProps: ComponentProps = getComponentProps(actionConstructor);
-
     // get all method name from action
     const methodNames = Object.keys(actionProps);
 

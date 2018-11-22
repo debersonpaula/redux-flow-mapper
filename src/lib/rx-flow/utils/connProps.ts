@@ -1,6 +1,8 @@
 import { ENUM_PROPS_KEY, ComponentProps, ComponentPropInfo } from '../Types';
 
-export function setConnProp(flowType: string, type: any, data?: any): Function {
+type propertyFunction = (target, key) => void;
+
+export function setConnProp(flowType: string, type: any, data?: any): propertyFunction {
   return function(target: any, key: string): void {
     // define metadata if not exists
     if (!Reflect.hasMetadata(ENUM_PROPS_KEY, target)) {
