@@ -1,5 +1,14 @@
 import { FlowActions, getState, getTrigger } from 'src/lib/rx-flow';
-import { StageOneState, StageTwoState, StageThreeState } from './states';
+import {
+  StageOneState,
+  StageTwoState,
+  StageThreeState,
+  StageFourState
+} from './states';
+import {
+  FlowPromiseActions,
+  FlowActionsPromised
+} from 'src/lib/rx-flow/tools/ReduxPromised';
 
 // --------------------------------------------------------------------
 // --- ACTIONS FOR STAGE 1 --------------------------------------------
@@ -48,7 +57,7 @@ export class StageTwoActions {
     const promisedAction = new Promise<string>(resolve => {
       setTimeout(() => {
         resolve('response from promise');
-      }, 2000);
+      }, 200);
     });
 
     promisedAction.then(response => {
@@ -62,8 +71,15 @@ export class StageTwoActions {
   };
 
   @getState(StageTwoState)
-  completed = (promiseResponse: string) => (state: StageTwoState): StageTwoState => {
-    return { ...state, isLoading: false, isCompleted: true, response: promiseResponse };
+  completed = (promiseResponse: string) => (
+    state: StageTwoState
+  ): StageTwoState => {
+    return {
+      ...state,
+      isLoading: false,
+      isCompleted: true,
+      response: promiseResponse
+    };
   };
 }
 // --------------------------------------------------------------------
@@ -92,5 +108,52 @@ export class StageThreeActions {
   @getState(StageThreeState)
   other = () => (state: StageThreeState): StageThreeState => {
     return { ...state, other: 'another action response' };
+  };
+}
+// --------------------------------------------------------------------
+// --- ACTIONS FOR STAGE 4 --------------------------------------------
+// --------------------------------------------------------------------
+@FlowActionsPromised({
+  name: 'stage4.actions',
+  state: StageFourState
+})
+export class StageFourActions implements FlowPromiseActions {
+  start(request: string, error: boolean) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        if (error) {
+          reject('error from stage 4');
+        } else {
+          resolve({ request });
+        }
+      }, 2500);
+    });
+  }
+}
+// --------------------------------------------------------------------
+// --- ACTIONS FOR STAGE 5 --------------------------------------------
+// --------------------------------------------------------------------
+@FlowActions({
+  name: 'stage5.actions'
+})
+export class Stage5Actions {
+  @getTrigger(StageFourState, StageFourActions, 'completed')
+  checkIsComplete = (
+    previous: StageFourState,
+    state: StageFourState
+  ) => {
+    if (!previous.isCompleted && state.isCompleted) {
+      console.log('isCompleted ok');
+    }
+  };
+
+  @getTrigger(StageFourState, StageFourActions, 'failed')
+  checkIsFailed = (
+    previous: StageFourState,
+    state: StageFourState
+  ) => {
+    if (!previous.isFailed && state.isFailed) {
+      console.log('isFailed ok');
+    }
   };
 }
