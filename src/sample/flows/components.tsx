@@ -1,8 +1,8 @@
 import * as React from 'react';
 
 import { getAction, getState, FlowConnection } from 'src/lib/rx-flow';
-import { StageOneState, StageTwoState, StageThreeState } from './states';
-import { StageOneActions, StageTwoActions, StageThreeActions } from './actions';
+import { StageOneState, StageTwoState, StageThreeState, StageFourState } from './states';
+import { StageOneActions, StageTwoActions, StageThreeActions, StageFourActions } from './actions';
 import { reduxflowApplication } from './main';
 
 // --------------------------------------------------------------------
@@ -109,5 +109,41 @@ export class StageThreeComponent extends React.Component<StageThreeComponentProp
       );
     }
     return null;
+  }
+}
+// --------------------------------------------------------------------
+// --- COMPONENT FOR STAGE FOUR --------------------------------------
+// --------------------------------------------------------------------
+class StageFourComponentProps {
+  @getAction(StageFourActions) actions?: StageFourActions;
+  @getState(StageFourState) stage?: StageFourState;
+  @getState(StageThreeState) previousStage?: StageThreeState;
+}
+@FlowConnection({
+  flow: reduxflowApplication,
+  props: StageFourComponentProps
+})
+export class StageFourComponent extends React.Component<StageFourComponentProps> {
+  render() {
+    if (this.props.previousStage.other) {
+      return (
+        <div className="flow-box">
+          <strong>stage four</strong>
+          <p>Based on FlowActionsPromised</p>
+          <p><button onClick={this.start}>start a promise</button></p>
+          <p><button onClick={this.startWithError}>start with error</button></p>
+          <hr />
+          <p>Result = {JSON.stringify(this.props.stage.response)}</p>
+          <p>Error = {JSON.stringify(this.props.stage.error)}</p>
+        </div>
+      );
+    }
+    return null;
+  }
+  start = () => {
+    this.props.actions.start('OK from stage 4', false);
+  }
+  startWithError = () => {
+    this.props.actions.start('Error from stage 4', true);
   }
 }
