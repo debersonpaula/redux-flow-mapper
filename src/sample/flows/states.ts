@@ -40,5 +40,5 @@ export class StageThreeState {
 @FlowState({
   name: 'stage4'
 })
-export class StageFourState extends FlowPromiseState<any, any> {
+export class StageFourState extends FlowPromiseState<string, any> {
 }

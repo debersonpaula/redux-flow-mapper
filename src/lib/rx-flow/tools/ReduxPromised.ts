@@ -41,8 +41,8 @@ export class FlowPromiseState<Response, Error>
   isLoading = false;
   isCompleted = false;
   isFailed = false;
-  response = undefined;
-  error = undefined;
+  response: Response = undefined;
+  error: Error = undefined;
 }
 
 export interface FlowPromiseActions {
