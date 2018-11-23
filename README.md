@@ -236,7 +236,17 @@ The FlowMapper will generate the action dispatchers as _loading_, _completed_ an
 The promise handle function will be replaced by dispatcher and the Promise will output the methods above for each Promise event.
 
 ```ts
-import { FlowActionsPromised, FlowPromiseActions } from "redux-flow-mapper";
+import {
+  FlowActionsPromised,
+  FlowPromiseActions,
+  FlowPromiseState
+} from "redux-flow-mapper";
+
+@FlowState({
+  name: 'my-promised-state'
+})
+export class MyState extends FlowPromiseState<any, any> {
+}
 
 @FlowActionsPromised({
   name: "my-promised-action",
