@@ -1,5 +1,6 @@
 import { FlowState } from 'src/lib/rx-flow';
 import { FlowPromiseState } from 'src/lib/rx-flow/tools/ReduxPromised';
+import { FlowHttpState } from 'src/lib/rx-flow/tools/ReduxHttp';
 
 // --------------------------------------------------------------------
 // --- STAGE 1 --------------------------------------------------------
@@ -42,3 +43,12 @@ export class StageThreeState {
 })
 export class StageFourState extends FlowPromiseState<string, any> {
 }
+// --------------------------------------------------------------------
+// --- STAGE HTTP -----------------------------------------------------
+// --------------------------------------------------------------------
+@FlowState({
+  name: 'testhttp'
+})
+export class TestHttpState extends FlowHttpState<any> {
+}
+

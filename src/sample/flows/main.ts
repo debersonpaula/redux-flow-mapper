@@ -3,26 +3,35 @@ import {
   StageOneState,
   StageTwoState,
   StageThreeState,
-  StageFourState
+  StageFourState,
+  TestHttpState
 } from './states';
 import {
   StageOneActions,
   StageTwoActions,
   StageThreeActions,
   StageFourActions,
-  Stage5Actions
+  Stage5Actions,
+  TestHttpActions
 } from './actions';
 // --------------------------------------------------------------------
 // --- MODULES --------------------------------------------------------
 // --------------------------------------------------------------------
 @FlowModule({
-  states: [StageOneState, StageTwoState, StageThreeState, StageFourState],
+  states: [
+    StageOneState,
+    StageTwoState,
+    StageThreeState,
+    StageFourState,
+    TestHttpState
+  ],
   actions: [
     StageOneActions,
     StageTwoActions,
     StageThreeActions,
     StageFourActions,
-    Stage5Actions
+    Stage5Actions,
+    TestHttpActions
   ]
 })
 export class MainModule {}

@@ -1,14 +1,20 @@
-import { FlowActions, getState, getTrigger } from 'src/lib/rx-flow';
+import {
+  FlowActions,
+  getState,
+  getTrigger,
+  FlowPromised,
+  FlowPromiseActions,
+  FlowHttpRequest,
+  FlowHttpActions,
+  http
+} from 'src/lib/rx-flow';
 import {
   StageOneState,
   StageTwoState,
   StageThreeState,
-  StageFourState
+  StageFourState,
+  TestHttpState
 } from './states';
-import {
-  FlowPromiseActions,
-  FlowActionsPromised
-} from 'src/lib/rx-flow/tools/ReduxPromised';
 
 // --------------------------------------------------------------------
 // --- ACTIONS FOR STAGE 1 --------------------------------------------
@@ -113,7 +119,7 @@ export class StageThreeActions {
 // --------------------------------------------------------------------
 // --- ACTIONS FOR STAGE 4 --------------------------------------------
 // --------------------------------------------------------------------
-@FlowActionsPromised({
+@FlowPromised({
   name: 'stage4.actions',
   state: StageFourState
 })
@@ -138,22 +144,36 @@ export class StageFourActions implements FlowPromiseActions {
 })
 export class Stage5Actions {
   @getTrigger(StageFourState, StageFourActions, 'completed')
-  checkIsComplete = (
-    previous: StageFourState,
-    state: StageFourState
-  ) => {
+  checkIsComplete = (previous: StageFourState, state: StageFourState) => {
     if (!previous.isCompleted && state.isCompleted) {
+      // tslint:disable-next-line
       console.log('isCompleted ok');
     }
   };
 
   @getTrigger(StageFourState, StageFourActions, 'failed')
-  checkIsFailed = (
-    previous: StageFourState,
-    state: StageFourState
-  ) => {
+  checkIsFailed = (previous: StageFourState, state: StageFourState) => {
     if (!previous.isFailed && state.isFailed) {
+      // tslint:disable-next-line
       console.log('isFailed ok');
     }
   };
+}
+// --------------------------------------------------------------------
+// --- ACTIONS FOR STAGE HTTP -----------------------------------------
+// --------------------------------------------------------------------
+@FlowHttpRequest({
+  name: 'test.http.actions',
+  state: TestHttpState
+})
+export class TestHttpActions implements FlowHttpActions {
+  request(simulateError?: number) {
+    if (simulateError === 400) {
+      return http.get('http://localhost:9999/fail400');
+    }
+    if (simulateError === 999) {
+      return http.get('http://server-does-not-exists');
+    }
+    return http.get('http://localhost:9999');
+  }
 }

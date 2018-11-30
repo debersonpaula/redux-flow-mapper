@@ -13,6 +13,7 @@ Work in Progress:
 - Reducer handlers: done
 - Triggers handlers: done
 - Promise based events: done
+- Http-Promise based events: done
 - Tests: TBD
 
 ## Requirements
@@ -21,6 +22,7 @@ Work in Progress:
 # requires the following packages:
 npm i --save react-redux
 npm i --save rxjs
+npm i --save axios
 npm i --save-dev @babel/plugin-proposal-decorators
 npm i --save-dev @babel/plugin-proposal-class-properties
 ```
@@ -229,7 +231,7 @@ export class MyComponent extends React.Component<Props> {
 
 ## Tools
 
-### FlowActionsPromised
+### FlowPromised
 
 These Actions are designed to be a Promise based template.
 The FlowMapper will generate the action dispatchers as _loading_, _completed_ and _failed_.
@@ -237,7 +239,7 @@ The promise handle function will be replaced by dispatcher and the Promise will 
 
 ```ts
 import {
-  FlowActionsPromised,
+  FlowPromised,
   FlowPromiseActions,
   FlowPromiseState
 } from "redux-flow-mapper";
@@ -248,7 +250,7 @@ import {
 export class MyState extends FlowPromiseState<any, any> {
 }
 
-@FlowActionsPromised({
+@FlowPromised({
   name: "my-promised-action",
   state: MyState
 })
@@ -301,8 +303,123 @@ export class MyPromisedCatcherAction {
 }
 ```
 
-## Sample
+### FlowHttpRequest
+These Actions are designed to be a Http-Promise based template.
+Use Axios as http requester and works same as __FlowPromised__
 
+```ts
+import {
+  FlowHttpRequest,
+  FlowHttpActions,
+  FlowHttpState,
+  http // <-- return an Axios object that makes requests
+} from "redux-flow-mapper";
+
+@FlowState({
+  name: 'testhttp'
+})
+export class TestHttpState extends FlowHttpState<any> {
+}
+
+@FlowHttpRequest({
+  name: 'test.http.actions',
+  state: TestHttpState
+})
+export class TestHttpActions implements FlowHttpActions {
+  request(simulateError?: number) {
+    if (simulateError === 400) {
+      return http.get('http://localhost:9999/fail400');
+    }
+    if (simulateError === 999) {
+      return http.get('http://server-does-not-exists');
+    }
+    return http.get('http://localhost:9999');
+  }
+}
+```
+
+The _FlowHttpState_ is based in the same event handler __FlowPromised__ (_loading_, _completed_ and _failed_), bu the response returns and AxiosResponse or AxiosError depending the handler.
+
+The object handling can be defined as example below. All Axios responses will be stored in the properties _response_ or _error_.
+
+```ts
+class StageHttpComponentProps {
+  @getAction(TestHttpActions) actions?: TestHttpActions;
+  @getState(TestHttpState) stage?: TestHttpState;
+}
+@FlowConnection({
+  flow: reduxflowApplication,
+  props: StageHttpComponentProps
+})
+export class StageHttpComponent extends React.Component<
+  StageHttpComponentProps
+> {
+  render() {
+    return (
+      <div className="flow-box">
+        <p>Based on FlowActionsHttpRequest</p>
+        <p>
+          <button onClick={this.request}>request</button>
+          <button onClick={this.request400}>error 400</button>
+          <button onClick={this.request999}>error 999</button>
+        </p>
+        {this.renderResponse()}
+        {this.renderError()}
+      </div>
+    );
+  }
+
+  renderResponse() {
+    const { isCompleted, response } = this.props.stage;
+    if (isCompleted) {
+      return (
+        <div>
+          <p>Response OK</p>
+          <p>Status = {response.status}</p>
+          <p>Data = {JSON.stringify(response.data)}</p>
+        </div>
+      );
+    }
+    return null;
+  }
+
+  renderError() {
+    const { isFailed, error } = this.props.stage;
+    if (isFailed) {
+      if (error.response) {
+        return (
+          <div>
+            <p>Response NOK</p>
+            <p>Status = {error.response.status}</p>
+            <p>Error = {JSON.stringify(error.response.data)}</p>
+          </div>
+        );
+      }
+      return (
+        <div>
+          <p>Response Can´t be Reached</p>
+          <p>Fail to request on {error.config.url}</p>
+        </div>
+      );
+    }
+    return null;
+  }
+
+  request = () => {
+    this.props.actions.request();
+  };
+
+  request400 = () => {
+    this.props.actions.request(400);
+  };
+
+  request999 = () => {
+    this.props.actions.request(999);
+  };
+}
+```
+
+## Sample
 The sample project is available in the source https://github.com/debersonpaula/redux-flow-mapper. Just install dependencies and run with `npm start`.
 
 ## License
