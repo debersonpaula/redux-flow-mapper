@@ -1,85 +1,78 @@
+import { AxiosResponse, AxiosError, AxiosPromise } from 'axios';
+// tslint:disable-next-line
+import axios from 'axios';
+export { axios as http };
+
 import {
   GenericClassDecorator,
   Type,
   ENUM_PROPERTY_NAME,
-  ENUM_FLOW_STATE,
+  ENUM_FLOW_STATE
 } from '../Types';
 import { setConnProp } from '../utils/connProps';
 
-interface IPromiseState<Response, Error> {
+/**
+ * Class to be extended for states based on Axios Http requests
+ */
+export class FlowHttpState<Response> {
   /**
    * set to true when Promise is on going
    */
-  isLoading: boolean;
+  isLoading: boolean = false;
 
   /**
    * set to true when Promise is done
    */
-  isCompleted: boolean;
+  isCompleted: boolean = false;
 
   /**
    * set to true when Promise is failed
    */
-  isFailed: boolean;
+  isFailed: boolean = false;
 
   /**
-   * contains the object from Promise's then
+   * contains the object from Axios then
    */
-  response?: Response;
+  response?: AxiosResponse<Response>;
 
   /**
-   * contains the object from Promise's catch
+   * contains the object from Axios catch
    */
-  error?: Error;
+  error?: AxiosError;
 }
 
-/**
- * Class to be extended for states based on Promise
- */
-export class FlowPromiseState<Response, Error>
-  implements IPromiseState<Response, Error> {
-  isLoading = false;
-  isCompleted = false;
-  isFailed = false;
-  response: Response = undefined;
-  error: Error = undefined;
+export interface FlowHttpActions {
+  request: (...args) => AxiosPromise<any>;
 }
 
-/**
- * Class to be extended for actions based on Promise
- */
-export interface FlowPromiseActions {
-  /**
-   * Define the Promise handler to be executed and listened in the start event
-   */
-  start: (...args) => Promise<any>;
-}
 // --------------------------------------------------------------------
 // --------------------------------------------------------------------
 // --------------------------------------------------------------------
 /**
- * Decorate the class with Actions based in Promise
- * 
+ * Decorate the class with Actions for Http Requests
+ *
  * To trigger events based on this action, use the
  * following methods as reference:
- * 
+ *
  * @method loading > is called after dispatch the start
  * @method completed -> is called after Promise.then
  * @method failed -> is called after Promise.catch
- * 
- * @param options 
+ *
+ * @param options Configuration parameters
  */
 // tslint:disable-next-line
-export const FlowPromised = (
-  options: IReduxFlowActionPromised
+export const FlowHttpRequest = (
+  options: IReduxFlowActionHttp
 ): GenericClassDecorator<Type<any>> => {
   return (target: Type<any>) => {
     // define name and type of state
     Reflect.defineMetadata(ENUM_PROPERTY_NAME, options.name, target);
 
-    const promiseHandler: (...args) => Promise<any> = target.prototype['start'];
+    // get request function
+    const promiseHandler: (...args) => Promise<any> =
+      target.prototype['request'];
 
-    target.prototype['start'] = function(...args) {
+    target.prototype['request'] = function(...args) {
       if (promiseHandler) {
         this.loading();
         promiseHandler(...args)
@@ -98,6 +91,7 @@ export const FlowPromised = (
         error: undefined
       };
     };
+
     target.prototype['completed'] = (promiseResponse: any) => state => {
       return {
         ...state,
@@ -108,6 +102,7 @@ export const FlowPromised = (
         error: undefined
       };
     };
+
     target.prototype['failed'] = (promiseError: any) => state => {
       return {
         ...state,
@@ -118,6 +113,7 @@ export const FlowPromised = (
         error: promiseError
       };
     };
+
     setConnProp(ENUM_FLOW_STATE, options.state)(target.prototype, 'loading');
     setConnProp(ENUM_FLOW_STATE, options.state)(target.prototype, 'completed');
     setConnProp(ENUM_FLOW_STATE, options.state)(target.prototype, 'failed');
@@ -126,7 +122,7 @@ export const FlowPromised = (
 // --------------------------------------------------------------------
 // --------------------------------------------------------------------
 // --------------------------------------------------------------------
-export interface IReduxFlowActionPromised {
+interface IReduxFlowActionHttp {
   /**
    * Name of action to be used as prefix
    */

@@ -1,11 +1,12 @@
 {
   "name": "redux-flow-mapper",
-  "version": "0.0.1-beta.5",
+  "version": "0.0.1-beta.6",
   "description": "Redux Flow Mapper",
   "main": "index.js",
   "author": "D.A.Paula",
   "license": "MIT",
   "peerDependencies": {
+    "axios": ">=0.18.0",
     "react-redux": ">=5.0.0",
     "reflect-metadata": ">=0.1.0",
     "rxjs": ">=6.0.0"
