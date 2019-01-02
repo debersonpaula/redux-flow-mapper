@@ -97,7 +97,10 @@ Any method decored by **getState** will be replaced by dispatcher function that 
 import { FlowActions, getState } from "redux-flow-mapper";
 
 @FlowActions({
-  name: "name-of-your-action"
+  // name of the flow
+  // all methods in this class will use this name
+  // as prefix in the redux action
+  name: "name-of-your-action-flow"
 })
 export class MyActions {
   @getState(MyState)
