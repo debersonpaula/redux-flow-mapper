@@ -126,12 +126,12 @@ import {FlowActions, getTrigger} from 'redux-flow-mapper';
 })
 export class MyAnotherActions {
   ...
+  @getAction(MyActions) actions?: MyActions;
 
   @getTrigger(MyState, MyActions, 'start')
   checkIfActionIfStarted = (
     previous: MyState,
-    state: MyState,
-    actions: MyActions
+    state: MyState
   ) => {
     if (!previous.myCustomData && state.myCustomData) {
       // make your actions
@@ -284,8 +284,10 @@ import { FlowActions, getTrigger } from "redux-flow-mapper";
   name: "my-promised-catcher-action"
 })
 export class MyPromisedCatcherAction {
+  @getAction(MyActions) actions?: MyActions;
+
   @getTrigger(MyState, MyPromisedAction, "completed")
-  checkIsComplete = (previous: MyState, state: MyState, actions: MyActions) => {
+  checkIsComplete = (previous: MyState, state: MyState) => {
     if (!previous.isCompleted && state.isCompleted) {
       console.log("isCompleted ok");
       actions.start();
