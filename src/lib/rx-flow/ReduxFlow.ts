@@ -336,7 +336,6 @@ function injectActions(actions: any[], reduxflow: FlowMapper) {
         action[actionsProp] = reduxflow.actionByType(
           actionProps[actionsProp].type
         ) as any;
-        console.log('action', action);
       }
     });
   });
