@@ -130,7 +130,8 @@ export class MyAnotherActions {
   @getTrigger(MyState, MyActions, 'start')
   checkIfActionIfStarted = (
     previous: MyState,
-    state: MyState
+    state: MyState,
+    actions: MyActions
   ) => {
     if (!previous.myCustomData && state.myCustomData) {
       // make your actions
@@ -248,10 +249,9 @@ import {
 } from "redux-flow-mapper";
 
 @FlowState({
-  name: 'my-promised-state'
+  name: "my-promised-state"
 })
-export class MyState extends FlowPromiseState<any, any> {
-}
+export class MyState extends FlowPromiseState<any, any> {}
 
 @FlowPromised({
   name: "my-promised-action",
@@ -281,34 +281,30 @@ Also, the promised methods can be triggered in another actions, by using the _co
 import { FlowActions, getTrigger } from "redux-flow-mapper";
 
 @FlowActions({
-  name: 'my-promised-catcher-action'
+  name: "my-promised-catcher-action"
 })
 export class MyPromisedCatcherAction {
-  @getTrigger(MyState, MyPromisedAction, 'completed')
-  checkIsComplete = (
-    previous: MyState,
-    state: MyState
-  ) => {
+  @getTrigger(MyState, MyPromisedAction, "completed")
+  checkIsComplete = (previous: MyState, state: MyState, actions: MyActions) => {
     if (!previous.isCompleted && state.isCompleted) {
-      console.log('isCompleted ok');
+      console.log("isCompleted ok");
+      actions.start();
     }
   };
 
-  @getTrigger(MyState, MyPromisedAction, 'failed')
-  checkIsFailed = (
-    previous: MyState,
-    state: MyState
-  ) => {
+  @getTrigger(MyState, MyPromisedAction, "failed")
+  checkIsFailed = (previous: MyState, state: MyState) => {
     if (!previous.isFailed && state.isFailed) {
-      console.log('isFailed ok');
+      console.log("isFailed ok");
     }
   };
 }
 ```
 
 ### FlowHttpRequest
+
 These Actions are designed to be a Http-Promise based template.
-Use Axios as http requester and works same as __FlowPromised__
+Use Axios as http requester and works same as **FlowPromised**
 
 ```ts
 import {
@@ -319,29 +315,28 @@ import {
 } from "redux-flow-mapper";
 
 @FlowState({
-  name: 'testhttp'
+  name: "testhttp"
 })
-export class TestHttpState extends FlowHttpState<any> {
-}
+export class TestHttpState extends FlowHttpState<any> {}
 
 @FlowHttpRequest({
-  name: 'test.http.actions',
+  name: "test.http.actions",
   state: TestHttpState
 })
 export class TestHttpActions implements FlowHttpActions {
   request(simulateError?: number) {
     if (simulateError === 400) {
-      return http.get('http://localhost:9999/fail400');
+      return http.get("http://localhost:9999/fail400");
     }
     if (simulateError === 999) {
-      return http.get('http://server-does-not-exists');
+      return http.get("http://server-does-not-exists");
     }
-    return http.get('http://localhost:9999');
+    return http.get("http://localhost:9999");
   }
 }
 ```
 
-The _FlowHttpState_ is based in the same event handler __FlowPromised__ (_loading_, _completed_ and _failed_), bu the response returns and AxiosResponse or AxiosError depending the handler.
+The _FlowHttpState_ is based in the same event handler **FlowPromised** (_loading_, _completed_ and _failed_), bu the response returns and AxiosResponse or AxiosError depending the handler.
 
 The object handling can be defined as example below. All Axios responses will be stored in the properties _response_ or _error_.
 
@@ -423,6 +418,7 @@ export class StageHttpComponent extends React.Component<
 ```
 
 ## Sample
+
 The sample project is available in the source https://github.com/debersonpaula/redux-flow-mapper. Just install dependencies and run with `npm start`.
 
 ## License

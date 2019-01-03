@@ -11,7 +11,8 @@ import {
   IReduxFlowModule,
   Type,
   ENUM_FLOW_STATE,
-  ENUM_FLOW_TRIGGER
+  ENUM_FLOW_TRIGGER,
+  ENUM_FLOW_ACTION
 } from './Types';
 import { BehaviorSubject } from 'rxjs';
 // --------------------------------------------------------------------
@@ -51,6 +52,9 @@ export class FlowMapper implements IReduxFlowMapper {
 
     // create actions
     this.pActions = createActions(this.pModules);
+
+    // inject Actions
+    injectActions(this.pActions, this);
 
     // generate methods and dispatchers
     createMethods(this.pActions, this, this.pReducerActions);
@@ -285,7 +289,10 @@ function createTriggers(
 
         // extract action and method name from props
         const { actionType, methodName } = actionProps[method].data;
-        const targetPrefix = Reflect.getMetadata(ENUM_PROPERTY_NAME, actionType);
+        const targetPrefix = Reflect.getMetadata(
+          ENUM_PROPERTY_NAME,
+          actionType
+        );
         const dispatcherName = `${targetPrefix}.${methodName}`;
         const targetAction = reducerActions[stateName][dispatcherName];
 
@@ -310,6 +317,26 @@ function createTriggers(
             }
           });
         }
+      }
+    });
+  });
+}
+
+function injectActions(actions: any[], reduxflow: FlowMapper) {
+  actions.forEach(action => {
+    // get constructor
+    const actionConstructor = action.constructor;
+    // extract props name from action
+    const actionProps: ComponentProps = getComponentProps(actionConstructor);
+    // get all method name from action
+    const actionsPropNames = Object.keys(actionProps);
+
+    actionsPropNames.forEach(actionsProp => {
+      if (actionProps[actionsProp].flowType === ENUM_FLOW_ACTION) {
+        action[actionsProp] = reduxflow.actionByType(
+          actionProps[actionsProp].type
+        ) as any;
+        console.log('action', action);
       }
     });
   });
